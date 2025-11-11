@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SAFIR · Rutines de la Mirka</title>
+<style>
+  :root{
+    --pumpkin:#ff8a00;
+    --pumpkin-700:#b86200;
+    --ink:#fff8e7;
+    --paper:#1a1a1a;
+    --muted:#b0a78f;
+  }
+  body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--paper);color:var(--ink);}
+  header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 16px;background:linear-gradient(90deg,var(--pumpkin),var(--pumpkin-700));color:#fff;}
+  h1{margin:0;font-size:22px;}
+  .tabs{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap;}
+  .tab{padding:8px 14px;border-radius:10px;border:1px solid #f0e0c5;cursor:pointer;background:#fff;color:var(--ink);font-weight:600;}
+  .tab.active{background:var(--pumpkin);color:#fff;}
+  .card{background:#2a2a2a;border:1px solid #3a3a3a;border-radius:16px;padding:14px;margin:10px auto;max-width:860px;box-shadow:0 4px 12px rgba(0,0,0,.2);}
+  .phase{font-weight:bold;color:var(--pumpkin);margin-top:10px;}
+  .task{display:flex;align-items:center;gap:8px;border:1px solid #444;border-radius:10px;padding:8px;margin:6px 0;background:#333;}
+  .task.done{opacity:.65;}
+  input[type="checkbox"]{width:18px;height:18px;accent-color:var(--pumpkin);}
+  .points{font-weight:bold;color:var(--pumpkin);margin-bottom:8px;text-align:right;}
+  #total-points{font-size:18px;text-align:center;margin:15px 0;color:green;}
+  footer{text-align:center;font-size:12px;color:var(--muted);margin:20px;}
+  button.action{background:#fff;color:var(--pumpkin);border:none;padding:8px 12px;border-radius:8px;cursor:pointer;margin:4px;}
+  .choice{margin:10px 0;}
+  button.choice-btn{background:var(--pumpkin);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;margin:6px;}
+  .selected{outline:3px solid var(--pumpkin-700);}
+  @media print{header,.tabs,button,#total-points,footer{display:none!important}body{background:#fff;color:#000}.card{box-shadow:none;border:none;page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <h1>SAFIR · Rutines de la Mirka</h1>
+  <div>
+    <button class="action" onclick="window.print()">🖨️ Imprimeix</button>
+  </div>
+</header>
+<div id="total-points">Total de punts del dia: 0 🧡</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="mati">Matí</div>
+  <div class="tab" data-tab="tarda">Tarda</div>
+  <div class="tab" data-tab="vespre">Vespre</div>
+  <div class="tab" data-tab="esmorzar">Esmorzar 🥣</div>
+</div>
+
+<div id="mati" class="card">
+  <div class="points" id="points-mati">Punts: 0</div>
+  <div class="phase">Llevar-se 🌅</div>
+  <div id="mati1"></div>
+  <div class="phase">Esmorzar 🍞</div>
+  <div id="mati2"></div>
+  <div class="phase">Preparar-se per marxar de casa 🏠</div>
+  <div id="mati3"></div>
+</div>
+
+<div id="tarda" class="card" style="display:none;">
+  <div class="points" id="points-tarda">Punts: 0</div>
+  <div class="phase">Arribada 🏡</div>
+  <div id="tarda1"></div>
+  <div class="phase">Descans curt ☕</div>
+  <div id="descans-curt"></div>
+  <div class="phase">Després del descans 📚</div>
+  <div id="tarda2"></div>
+</div>
+
+<div id="vespre" class="card" style="display:none;">
+  <div class="points" id="points-vespre">Punts: 0</div>
+  <div class="phase">Vespre 🌙</div>
+  <div id="vespre1"></div>
+  <div class="phase">Després de sopar 🍽️</div>
+  <div id="vespre2"></div>
+  <div class="phase">Rutines de descompressió 💆‍♀️</div>
+  <div id="vespre3"></div>
+</div>
+
+<div id="esmorzar" class="card" style="display:none;">
+  <div class="phase">Tria l'esmorzar per demà 🥣</div>
+  <p>Tria una de les dues opcions següents per preparar l'esmorzar de demà:</p>
+  <div class="choice">
+    <button class="choice-btn" id="opt1">🍞 Torrades integrals amb formatge + fruita + aigua</button>
+    <button class="choice-btn" id="opt2">🥣 Iogurt natural amb cereals i fruita tallada</button>
+  </div>
+</div>
+
+<footer>Fet amb 💛 carbassa · Les dades es desen al dispositiu (localStorage)</footer>
+<script>
+const data={
+  mati1:["😊 Llevar-se amb un somriure ;) ","🧘‍♀️ 3 inspiracions 'palleta' / 3 expiracions amb palleta","🚿 Rentar-se la cara","💇‍♀️ Pentinar-se","👕 Vestir-se","🤓 Posar-se les ulleres","🧺 Endreçar la roba"],
+  mati2:["🍞 Esmorzar","💊 Prendre les pastilles","🍽️ Desparar la taula","🪥 Anar a rentar-se les dents"],
+  mati3:["👟 Sabates","🎒 Maleta","🎧 Cascs / MP4","👜 Bolso"],
+  tarda1:["🥿 Posar-se les sabatilles","💼 Deixar la motxilla al despatx","💋 Fer un petó a la mama"],
+  "descans-curt":["🕒 Descans curt de 10 min"],
+  tarda2:["🗂️ Organitzar-se els deures","📚 Fer deures 25 min","💪 Challenge setmanal: saltar a la corda 1 min","💃 Ballar","📖 Repassar / estudiar 25 min","🎻 Violí 5 min","🧹 Endreçar el despatx","🎒 Motxilla preparada"],
+  vespre1:["👨‍👩‍👧 30 minuts amb mama o papa","🍽️ Parar taula","🥣 Sopar"],
+  vespre2:["🧽 Ajudar a desparar taula","🪣 Passar drap"],
+  vespre3:["🪥 Rentar-se les dents","📖 Llegir 15 minuts","🌬️ Fer les respiracions (com al matí)","👕 Preparar-se la roba per a l'endemà"]
+};
+
+function render(){
+  let total=0;
+  for(let key in data){
+    const cont=document.getElementById(key);
+    if(!cont)continue;
+    cont.innerHTML='';
+    let done=0;
+    data[key].forEach((txt,i)=>{
+      const label=document.createElement('label');label.className='task';
+      const cb=document.createElement('input');cb.type='checkbox';
+      cb.onchange=()=>{if(cb.checked)done++;else done--;updatePoints();};
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(txt));
+      cont.appendChild(label);
+    });
+  }
+}
+function updatePoints(){
+  const checks=document.querySelectorAll('input[type=checkbox]:checked').length;
+  document.getElementById('total-points').textContent='Total de punts del dia: '+checks+' 🧡';
+}
+render();
+
+const tabs=document.querySelectorAll('.tab');
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+  tabs.forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.card').forEach(c=>c.style.display='none');
+  document.getElementById(tab.dataset.tab).style.display='block';
+}));
+</script>
+</body>
+</html>
