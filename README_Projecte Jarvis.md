@@ -1,6 +1,6 @@
 # 🧡 SAFIR — Gestió Familiar (versió superior)
 
-Aquesta és la versió superior del projecte **SAFIR**, pensada per a la gestió familiar amb tres usuaris principals: **Mama (Iz)**, **Papa** i **Mirka**.  
+Aquesta és la web de la gestió de rutines que s'integrarà al projecte **JARVIS - SAFIR**, pensada per a la gestió familiar amb tres usuaris principals: **Mama (Iz)**, **Papa** i **Mirka**.  
 Inclou rutines personalitzades, punts, validació i comunicació dins la família. 🌿
 
 ---
